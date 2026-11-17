@@ -22,6 +22,7 @@
   const ENGATILHA = ['priest_a2_gutshot_cock_01.mp3', 'priest_a2_gutshot_cock_02.mp3', 'priest_a2_gutshot_cock_03.mp3'];
   const TIRO = ['priest_a2_gutshot_fire_01.mp3', 'priest_a2_gutshot_fire_02.mp3', 'priest_a2_gutshot_fire_03.mp3'];
 
+  const FUNDO = 'priest_witching_hour_blessed_lp_01.mp3', FUNDO_VOL = 0.45;   // volume do fundo em relação ao resto
   const sorteia = (l) => l[Math.floor(Math.random() * l.length)];
   let ultima = -1;
   function sorteiaFala() {            // nunca repete a mesma fala duas vezes seguidas
@@ -32,7 +33,7 @@
     const a = new Audio(BASE + 'audio/' + arq); a.volume = vol; a.preload = 'auto'; return a;
   }
   // pré-carrega tudo para o primeiro alerta já sair sincronizado
-  [...FALAS.map((f) => f.arq), ...ENGATILHA, ...TIRO].forEach((n) => { const a = som(n, 0); a.load(); });
+  [...FALAS.map((f) => f.arq), ...ENGATILHA, ...TIRO, FUNDO].forEach((n) => { const a = som(n, 0); a.load(); });
 
   const fila = []; let tocando = false;
 
@@ -57,6 +58,18 @@
     const timers = [];
     const em = (s, fn) => timers.push(setTimeout(fn, s * 1000));
     video.play().catch(() => {});
+    // fundo: Blessed Loop do jogo (priest_witching_hour_blessed_lp_01), entra em fade e fica abaixo da fala e do tiro
+    const fundo = som(FUNDO, 0); fundo.loop = true; fundo.play().catch(() => {});
+    const alvoFundo = vol * FUNDO_VOL;
+    const rampa = (de, ate, ms, depois) => {
+      const t0 = performance.now();
+      const passo = () => {
+        const k = Math.min(1, (performance.now() - t0) / ms); fundo.volume = de + (ate - de) * k;
+        if (k < 1) setTimeout(passo, 30); else if (depois) depois();
+      };
+      passo();
+    };
+    rampa(0, alvoFundo, 400);
     em(T_ENGATILHA, () => sEng.play().catch(() => {}));
     em(T_TIRO, () => sTiro.play().catch(() => {}));
     em(T_FALA, () => {
@@ -65,6 +78,7 @@
     });
     const fim = () => {
       legenda.classList.remove('mostra');
+      rampa(fundo.volume, 0, 900, () => fundo.pause());
       setTimeout(() => {
         raiz.classList.remove('ativo');
         setTimeout(() => { timers.forEach(clearTimeout); proximo(); }, 600);
