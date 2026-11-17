@@ -5,7 +5,7 @@ window.addEventListener('onWidgetLoad', (obj) => {
   const f = obj.detail.fieldData || {};
   window.VENATOR_VOLUME = (f.volume ?? 80) / 100;
   mostrarNome = f.mostrarNome !== false;
-  const s = document.createElement('script'); s.src = window.VENATOR_BASE + 'alerta.js'; document.head.appendChild(s);
+  const s = document.createElement('script'); s.src = window.VENATOR_BASE + 'alerta.js?v=2'; document.head.appendChild(s);
 });
 window.addEventListener('onEventReceived', (obj) => {
   const d = obj.detail || {};
