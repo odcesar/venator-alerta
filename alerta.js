@@ -1,7 +1,7 @@
 // Alerta de inscrito do Venator: knockback com fogo, som do Gutshot sincronizado e uma fala do Ira Domini sorteada,
 // com a legenda em português. Usado pela página do OBS (index.html) e pelo widget do StreamElements.
 (function () {
-  const BASE = (window.VENATOR_BASE || '').replace(/\/?$/, '/');
+  const BASE = window.VENATOR_BASE ? window.VENATOR_BASE.replace(/\/?$/, '/') : '';   // sem base: caminhos relativos à página
   const FPS = 30, QUADRO_TIRO = 15;                 // tempos.json do render: o clarão acende no quadro 15
   const T_TIRO = (QUADRO_TIRO - 1) / FPS;           // 0,467 s
   const T_ENGATILHA = Math.max(0, T_TIRO - 0.36);   // "Delay": o engatilhar toca um pouco antes do disparo
