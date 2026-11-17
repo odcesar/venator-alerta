@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Venator · alerta de inscrito</title>
+<link rel="stylesheet" href="alerta.css">
+<style>
+  .teste { position: fixed; left: 16px; bottom: 16px; z-index: 9; display: flex; gap: 8px; align-items: center;
+           font: 14px system-ui, sans-serif; color: #ffefd7; }
+  .teste button { min-height: 44px; padding: 0 16px; border-radius: 8px; border: 1px solid #5a524a; background: #1a1716;
+                  color: #ffefd7; font: inherit; cursor: pointer; }
+  .teste button:hover { background: #2a2522; }
+  body.teste-on { background: #101012; }
+</style>
+</head>
+<body>
+  <div id="venator-alerta">
+    <div class="carta"><video src="venator-knockback.webm" muted playsinline preload="auto"></video></div>
+    <p class="legenda"></p>
+    <div class="nome vazio"></div>
+  </div>
+  <div class="teste" hidden>
+    <button type="button" id="btn">Testar alerta</button>
+    <span>Fala sorteada a cada clique.</span>
+  </div>
+<script src="alerta.js"></script>
+<script>
+  // ?teste=1 mostra o botão de teste. ?auto=SEGUNDOS repete sozinho (para ajustar no OBS). ?vol=0.8 muda o volume.
+  // ?nome=Fulano mostra o nome de quem se inscreveu (o widget do StreamElements preenche isso sozinho).
+  const p = new URLSearchParams(location.search);
+  if (p.has('vol')) window.VENATOR_VOLUME = parseFloat(p.get('vol'));
+  if (p.get('teste')) {
+    document.body.classList.add('teste-on'); document.querySelector('.teste').hidden = false;
+    document.getElementById('btn').onclick = () => VenatorAlerta.tocar({ nome: p.get('nome') || 'Novo inscrito' });
+  }
+  if (p.get('auto')) {
+    const s = Math.max(6, parseFloat(p.get('auto')) || 10);
+    const vai = () => VenatorAlerta.tocar({ nome: p.get('nome') || '' });
+    setTimeout(vai, 800); setInterval(vai, s * 1000);
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,4 @@
+{
+  "volume": { "type": "slider", "label": "Volume (%)", "value": 80, "min": 0, "max": 100, "step": 1 },
+  "mostrarNome": { "type": "checkbox", "label": "Mostrar o nome de quem se inscreveu", "value": true }
+}
